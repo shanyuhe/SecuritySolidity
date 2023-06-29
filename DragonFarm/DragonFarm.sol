@@ -30,6 +30,36 @@ struct User {
     Dragon dragon;                  // 龙的信息，是一个 Dragon 结构体类型的变量，包含龙的各种属性
 }
 
+
+    uint256 constant public PERCENTS_DIVIDER = 10000;  // 百分比分割器，用于计算百分比的除数
+    uint256 constant public TIME_STEP = 24 hours;  // 时间步长，用于计算收益的时间间隔
+
+    uint256 constant public DRAGON_UPGRADE_TIME = 24 hours;  // 龙的升级时间间隔
+
+    uint256 constant public MARKETING_FEE = 800;  // 营销费用比例，以百分比表示，8%
+    uint256 constant public DEV_FEE = 200;  // 开发费用比例，以百分比表示，2%
+
+    uint256 constant public FOOD_PRICE = 0.00001 ether;  // 食物的价格
+    uint256 constant public GOLD_PRICE = 0.00001 ether;  // 金币的价格
+
+    uint256 constant public MIN_PURCHASE = 0.05 ether;  // 最低购买金额
+    uint256 constant public MIN_WITHDRAWAL = 0.01 ether;  // 最低提现金额
+
+    uint256 constant public GOLD_TO_FOOD_BONUS = 1000;  // 金币兑换食物的奖励比例，以百分比表示，10%
+
+    mapping(address => User) public users;  // 用户映射，存储用户地址和对应的用户信息
+
+    uint256 public totalDeposits;  // 总存款金额
+    uint256 public totalStaked;  // 总抵押金额
+    uint256 public totalEarned;  // 总收益金额
+    uint256[] public dragons = [0, 0, 0, 0, 0];  // 龙的数量数组，记录不同类型的龙的数量
+
+    address private marketingFund;  // 营销基金账户地址
+    address private dev;  // 开发者账户地址
+
+    bool launched = false;  // 合约是否已经启动的标志位
+
+
     modifier notContract {
         require(!isContract(msg.sender), "caller is a contract");
         _;
@@ -115,10 +145,10 @@ struct User {
 
         ffunction buyFood() public payable notContract {
         // 检查支付的金额是否达到最低购买限制
-        require(msg.value >= MIN_PURCHASE, "金额不足");
+            require(msg.value >= MIN_PURCHASE, "金额不足");
 
-        // 调用 _buyFood 函数进行购买食物操作
-        _buyFood(msg.value, msg.sender);
+            // 调用 _buyFood 函数进行购买食物操作
+            _buyFood(msg.value, msg.sender);
     }
 
     function _buyFood(uint256 value, address sender) private {
